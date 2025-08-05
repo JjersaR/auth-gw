@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-ms
+  # el gateway estara activo
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth
+              uri: http://localhost:8090
+              predicates:
+                - Path=/api/auth/**
+
+            - id: user
+              uri: http://localhost:8091
+              predicates:
+                - Path=/api/user/**
+              filters:
+                - name: JwtAuthenticationFilter
+                - RemoveRequestHeader=Authorization
+
+security:
+  jwt:
+    key:
+      private: 64e20a77ca130f2b845b47af88e653e6625e68304b713bc6fd157149d925f4f1
+    user:
+      generator: JjersaR-BACKEND
